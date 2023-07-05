@@ -57,5 +57,11 @@
 
 ![UML diagram for the animals class](img/uml_animal1.png)
 
+7. В подключенном MySQL репозитории создать базу данных “Друзья
+   человека”
+      #### mysql> create database human_friends;
+      #### mysql> use human_friends;
+8. 
+
 
    
