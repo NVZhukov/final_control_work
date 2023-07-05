@@ -59,9 +59,39 @@
 
 7. В подключенном MySQL репозитории создать базу данных “Друзья
    человека”
-      #### mysql> create database human_friends;
-      #### mysql> use human_friends;
-8. 
+      #### mysql> CREATE DATABASE human_friends;
+      #### mysql> USE human_friends;
+8. Создать таблицы с иерархией из диаграммы в БД  
+       CREATE TABLE animal_class (  
+   &nbsp; &nbsp; &nbsp; id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,  
+   &nbsp; &nbsp; &nbsp; name VARCHAR(30) NOT NULL  
+);  
+       CREATE TABLE animal_genus (  
+   &nbsp; &nbsp; &nbsp; id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,   
+   &nbsp; &nbsp; &nbsp; name VARCHAR(30) NOT NULL,  
+   &nbsp; &nbsp; &nbsp; class_id INT,  
+   &nbsp; &nbsp; &nbsp; FOREIGN KEY (class_id) REFERENCES animal_class (id) ON DELETE CASCADE ON UPDATE CASCADE  
+);  
+       CREATE TABLE animal (  
+   &nbsp; &nbsp; &nbsp; id INT AUTO_INCREMENT PRIMARY KEY,  
+   &nbsp; &nbsp; &nbsp; name VARCHAR(30) NOT NULL,  
+   &nbsp; &nbsp; &nbsp; birthday DATE,  
+   &nbsp; &nbsp; &nbsp; genus_id INT,  
+   &nbsp; &nbsp; &nbsp; FOREIGN KEY (genus_id) REFERENCES animal_genus (id) ON DELETE CASCADE ON UPDATE CASCADE  
+);  
+       CREATE TABLE command (  
+   &nbsp; &nbsp; &nbsp; id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,  
+   &nbsp; &nbsp; &nbsp; name VARCHAR(30) NOT NULL,  
+   &nbsp; &nbsp; &nbsp; description VARCHAR(300) NOT NULL  
+);  
+   CREATE TABLE animal_command (  
+   &nbsp; &nbsp; &nbsp; animal_id INT NOT NULL,  
+   &nbsp; &nbsp; &nbsp; command_id INT NOT NULL,  
+   &nbsp; &nbsp; &nbsp; FOREIGN KEY (animal_id) REFERENCES animal (id) ON DELETE CASCADE ON UPDATE CASCADE,  
+   &nbsp; &nbsp; &nbsp; FOREIGN KEY (command_id) REFERENCES command (id) ON DELETE CASCADE ON UPDATE CASCADE  
+);
+
+
 
 
    
