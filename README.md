@@ -100,6 +100,23 @@ VALUES
    INSERT animal_command(animal_id,command_id)  
 VALUES  
 ('1','6'),('2','3'),('3','5'),('4','2'),('5','5'),('6','1'),('7','4'),('8','1'),('9','6'),('10','4'),('11','4'),('12','6');
+10. Удалив из таблицы верблюдов, т.к. верблюдов решили перевезти в другой
+        питомник на зимовку. Объединить таблицы лошади, и ослы в одну таблицу.  
+      DELETE FROM animal WHERE genus_id = '5';  
+    CREATE TABLE horse_donkey AS   
+SELECT * FROM animal WHERE genus_id = '4' UNION  
+SELECT * FROM animal WHERE genus_id = '6';
+11. .Создать новую таблицу “молодые животные” в которую попадут все
+    животные старше 1 года, но младше 3 лет и в отдельном столбце с точностью
+    до месяца подсчитать возраст животных в новой таблице  
+    CREATE TABLE young_animal  
+AS SELECT id,name,birthday,  
+TIMESTAMPDIFF(YEAR, birthday, now()) AS year,  
+TIMESTAMPDIFF(MONTH, birthday, now()) % 12 AS month  
+FROM animal  
+WHERE DATE_ADD(birthday, INTERVAL 1 YEAR) < CURDATE()  
+AND  
+DATE_ADD(birthday, INTERVAL 3 YEAR) > CURDATE();
 
 
 
