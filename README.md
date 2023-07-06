@@ -81,8 +81,7 @@
 );  
        CREATE TABLE command (  
    &nbsp; &nbsp; &nbsp; id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,  
-   &nbsp; &nbsp; &nbsp; name VARCHAR(30) NOT NULL,  
-   &nbsp; &nbsp; &nbsp; description VARCHAR(300) NOT NULL  
+   &nbsp; &nbsp; &nbsp; name VARCHAR(30) NOT NULL,   
 );  
    CREATE TABLE animal_command (  
    &nbsp; &nbsp; &nbsp; animal_id INT NOT NULL,  
