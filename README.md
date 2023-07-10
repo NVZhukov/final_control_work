@@ -88,8 +88,46 @@
    &nbsp; &nbsp; &nbsp; command_id INT NOT NULL,  
    &nbsp; &nbsp; &nbsp; FOREIGN KEY (animal_id) REFERENCES animal (id) ON DELETE CASCADE ON UPDATE CASCADE,  
    &nbsp; &nbsp; &nbsp; FOREIGN KEY (command_id) REFERENCES command (id) ON DELETE CASCADE ON UPDATE CASCADE  
-);
-
+);  
+9. Заполнить низкоуровневые таблицы именами(животных), командами
+      которые они выполняют и датами рождения  
+      INSERT animal_class(name) VALUES('Pets'),('Pack animal');  
+      INSERT animal_genus(name,class_id) VALUES('Dog','1'),('Cat','1'),('Hamster','1'),('Horse','2'),('Camel','2'),('Donkey','2');  
+      INSERT animal(name,birthday,genus_id)    
+VALUES  
+('Volt','2021-10-01','1'),('Jack','2020-08-11','1'),('Marshmallow','2022-11-13','2'),('Smoke','2023-01-13','2'),('Kuzya','2022-10-26','3'),('Danya','2021-05-01','3'),('Wild','2020-04-07','4'),('Wind','2018-10-18','4'),('Dust','2022-01-07','5'),('Sahara','2018-10-19','5'),('Sakura','2021-06-16','6'),('Strawberry','2022-06-15','6');  
+   INSERT command(name) VALUES('Run'),('Jump'),('Bring a stick'),('Drag'),('Play'),('Walk');  
+   INSERT animal_command(animal_id,command_id)  
+VALUES  
+('1','6'),('2','3'),('3','5'),('4','2'),('5','5'),('6','1'),('7','4'),('8','1'),('9','6'),('10','4'),('11','4'),('12','6');
+10. Удалив из таблицы верблюдов, т.к. верблюдов решили перевезти в другой
+        питомник на зимовку. Объединить таблицы лошади, и ослы в одну таблицу.  
+      DELETE FROM animal WHERE genus_id = '5';  
+    CREATE TABLE horse_donkey AS   
+SELECT * FROM animal WHERE genus_id = '4' UNION  
+SELECT * FROM animal WHERE genus_id = '6';
+11. .Создать новую таблицу “молодые животные” в которую попадут все
+    животные старше 1 года, но младше 3 лет и в отдельном столбце с точностью
+    до месяца подсчитать возраст животных в новой таблице  
+    CREATE TABLE young_animal  
+AS SELECT id,name,birthday,  
+TIMESTAMPDIFF(YEAR, birthday, now()) AS year,  
+TIMESTAMPDIFF(MONTH, birthday, now()) % 12 AS month  
+FROM animal  
+WHERE DATE_ADD(birthday, INTERVAL 1 YEAR) < CURDATE()  
+AND  
+DATE_ADD(birthday, INTERVAL 3 YEAR) > CURDATE();
+12. Объединить все таблицы в одну, при этом сохраняя поля, указывающие на
+        прошлую принадлежность к старым таблицам.  
+    CREATE TABLE all_data  
+AS SELECT animal.id, animal.name, animal.birthday,  
+animal_genus.name AS genus, animal_class.name AS class,  
+command.name AS command  
+FROM animal, animal_genus, animal_class, animal_command, command  
+WHERE animal.genus_id = animal_genus.id  
+AND animal_genus.class_id = animal_class.id  
+AND animal.id = animal_command.animal_id  
+AND animal_command.command_id = command.id;
 
 
 
