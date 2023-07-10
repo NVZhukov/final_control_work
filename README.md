@@ -117,6 +117,17 @@ FROM animal
 WHERE DATE_ADD(birthday, INTERVAL 1 YEAR) < CURDATE()  
 AND  
 DATE_ADD(birthday, INTERVAL 3 YEAR) > CURDATE();
+12. Объединить все таблицы в одну, при этом сохраняя поля, указывающие на
+        прошлую принадлежность к старым таблицам.  
+    CREATE TABLE all_data  
+AS SELECT animal.id, animal.name, animal.birthday,  
+animal_genus.name AS genus, animal_class.name AS class,  
+command.name AS command  
+FROM animal, animal_genus, animal_class, animal_command, command  
+WHERE animal.genus_id = animal_genus.id  
+AND animal_genus.class_id = animal_class.id  
+AND animal.id = animal_command.animal_id  
+AND animal_command.command_id = command.id;
 
 
 
