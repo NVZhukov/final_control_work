@@ -8,14 +8,14 @@ public abstract class Animal {
     protected final String name;
     protected final LocalDate birthday;
     protected ArrayList<Command> commandList;
-    protected static int id;
     protected AnimalGenus animalGenus;
+    private static int count;
+    private final int id = ++count;
 
     public Animal(String name, LocalDate birthday) {
         this.name = name;
         this.birthday = birthday;
         commandList = new ArrayList<>();
-        id++;
     }
 
     public String getName() {

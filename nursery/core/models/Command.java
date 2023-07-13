@@ -8,8 +8,8 @@ public record Command(String name) {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Command");
-        sb.append(" - ").append(name);
+        final StringBuilder sb = new StringBuilder();
+        sb.append(name);
         return sb.toString();
     }
 

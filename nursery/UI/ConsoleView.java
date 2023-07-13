@@ -7,9 +7,8 @@ import final_control_work.nursery.core.models.Command;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.time.format.DateTimeParseException;
+import java.util.*;
 
 public class ConsoleView {
 
@@ -25,7 +24,6 @@ public class ConsoleView {
     }
 
     public void showStartInfo() {
-        System.out.println("Вас привествует программа учета животных в питомнике!");
         List<Animal> animalList = nurseryEntry.getAnimals();
         if (animalList.isEmpty()) {
             System.out.println("Пока в питомнике нет животных!");
@@ -35,13 +33,21 @@ public class ConsoleView {
         }
     }
 
-    public int selectAction() {
+        public int selectAction() {
+        int action = 0;
         System.out.println("Выберите дальнейшее действие: ");
         System.out.println("1 - Добавить животное");
         System.out.println("2 - Информация о конкретном животном");
-        System.out.println("3 - Сохранить базу");
-        System.out.println("4 - Завершить работу");
-        return scanner.nextInt();
+        System.out.println("3 - Обучить новой команде");
+        System.out.println("4 - Выписать животное");
+        System.out.println("5 - Завершить работу");
+        try {
+            scanner = new Scanner(System.in);
+            action = scanner.nextInt();
+        } catch (InputMismatchException e) {
+            e.printStackTrace();
+        }
+        return action;
     }
 
     public boolean addingAnimal() {
@@ -56,13 +62,17 @@ public class ConsoleView {
                 String inputData = scanner.nextLine();
                 AnimalData data = animalData(inputData);
                 return nurseryEntry.createAnimal(data.name, data.birthDate, data.animalGenus);
-            }catch (RuntimeException e){
+            } catch (DateTimeParseException e) {
+                System.out.println("Неправильный формат даты рождения");
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            } catch (RuntimeException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void animalInfo() {
+    public Animal animalInfo() {
         String infoMessage = String.format("Введите номер животного (1 - %d)", nurseryEntry.getAnimals().size());
         System.out.println(infoMessage);
         while (true) {
@@ -71,9 +81,11 @@ public class ConsoleView {
                 int animalNumber = scanner.nextInt();
                 Animal animal = nurseryEntry.getAnimals().get(animalNumber - 1);
                 printAnimalInfo(animal);
-                break;
+                return animal;
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("Запись с таким номером отсутствует");
+            } catch (NoSuchElementException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -82,14 +94,8 @@ public class ConsoleView {
         System.out.println("Укажите название команды: ");
         scanner = new Scanner(System.in);
         String input = scanner.nextLine();
-        if (animal.getCommandList().contains(input)) {
-            System.out.println(animal.getName() + " уже обучен этой команде!");
-            return false;
-        }else {
-            animal.learnCommand(new Command(input));
-            System.out.println(animal.getName() + " успешно обучен команде " + input);
-        }
-        return true;
+        System.out.println(animal.getName() + " успешно обучен команде: " + input);
+        return animal.learnCommand(new Command(input));
     }
 
     public boolean deleteAnimal() {
@@ -113,7 +119,6 @@ public class ConsoleView {
         if (result.length < 3) {
             throw new IllegalArgumentException("Недостаточное количество данных");
         }
-
         if (result.length > 3) {
             throw new IllegalArgumentException("Слишком много данных");
         }
@@ -124,7 +129,7 @@ public class ConsoleView {
         return new AnimalData(animalName, birthDay, genus);
     }
 
-    private void printAnimalInfo(Animal animal) {
+    public void printAnimalInfo(Animal animal) {
         System.out.printf("Род животного: %s\n", animal.getAnimalGenus().getTitle());
         System.out.printf("Имя: %s\n", animal.getName());
         System.out.printf("Дата рождения: %s\n", animal.getBirthday());
